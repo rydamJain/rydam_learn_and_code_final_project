@@ -1,0 +1,105 @@
+[
+    {
+      "roles": [
+        {
+          "role_id": 1,
+          "role_name": "admin"
+        },
+        {
+          "role_id": 2,
+          "role_name": "employee"
+        }
+      ],
+      "role_mapping": {
+        "1": "Can manage food items and view all feedback",
+        "2": "Can assist in managing food items and provide feedback"
+      },
+      "item": {
+        "name": "Aloo Paratha",
+        "category": "Breakfast",
+        "feedback": [
+          {
+            "user": "employee123",
+            "rating": 4.5,
+            "comment": "Delicious and perfectly cooked!",
+            "timestamp": "2024-06-01T12:34:56Z"
+          },
+          {
+            "user": "employee456",
+            "rating": 4.0,
+            "comment": "Great taste but a bit too fatty for me.",
+            "timestamp": "2024-06-02T08:20:43Z"
+          }
+        ]
+      }
+    },
+    {
+      "roles": [
+        {
+          "role_id": 1,
+          "role_name": "admin"
+        },
+        {
+          "role_id": 3,
+          "role_name": "chef"
+        }
+      ],
+      "role_mapping": {
+        "1": "Can manage food items and view all feedback",
+        "3": "Can create and update recipes and send notifications"
+      },
+      "item": {
+        "name": "Pav Bhaji",
+        "category": "Breakfast",
+        "feedback": [
+          {
+            "user": "chef_mario",
+            "rating": 5.0,
+            "comment": "Fresh and crispy, loved the dressing!",
+            "timestamp": "2024-06-03T14:56:30Z"
+          },
+          {
+            "user": "chef_anna",
+            "rating": 4.5,
+            "comment": "Very tasty, could use a bit more vegetables.",
+            "timestamp": "2024-06-04T09:15:21Z"
+          }
+        ]
+      }
+    },
+    {
+      "roles": [
+        {
+          "role_id": 2,
+          "role_name": "employee"
+        },
+        {
+          "role_id": 3,
+          "role_name": "chef"
+        }
+      ],
+      "role_mapping": {
+        "2": "Can assist in managing food items and provide feedback",
+        "3": "Can create and update recipes and send notifications"
+      },
+      "item": {
+        "name": "Paneer",
+        "category": "Lunch",
+        "feedback": [
+          {
+            "user": "chef_lucy",
+            "rating": 4.8,
+            "comment": "Rich in protein, a health conscious person's dream!",
+            "timestamp": "2024-06-05T11:22:33Z"
+          },
+          {
+            "user": "employee789",
+            "rating": 4.0,
+            "comment": "Great flavor but a bit too sweet.",
+            "timestamp": "2024-06-06T15:48:59Z"
+          }
+        ]
+      }
+    }
+  ]
+  

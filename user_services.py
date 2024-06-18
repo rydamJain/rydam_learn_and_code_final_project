@@ -17,18 +17,13 @@ class UserServices:
     def fetch_users(self):
         return self.db.fetchall('SELECT * FROM users')
 
-# Initialize the database and user services
-db = DatabaseServices('recommendation_engine.db')
-user_services = UserServices(db)
+    
 
-# Uncomment the following lines to insert users into the database
-# user_services.insert_user(1, "rydam@gmail.com", 1)
-# user_services.insert_user(2, "hemish@gmail.com", 2)
-# user_services.insert_user(3, "nidhi@gmail.com", 3)
-# user_services.insert_user(4, "ahaana@gmail.com", 3)
-# user_services.insert_user(6, "john@gmail.com", 3)
-# user_services.insert_user(5, "naman@gmail.com", 3)
-# user_services.delete_user(5)
-# Fetch and print all users
-users = user_services.fetch_users()
-print(users)
+# Example usage
+if __name__ == "__main__":
+    db = DatabaseServices('recommendation_engine.db')
+    user_services = UserServices(db)
+    # user_services.insert_user(1, "hemish@gmail.com", 3)
+    # user_services.delete_user(1)
+    print(user_services.fetch_users())
+

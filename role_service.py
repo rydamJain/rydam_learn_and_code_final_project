@@ -25,10 +25,20 @@ class RoleServices:
             return result[0][0]
         return None
 
-db = DatabaseServices('recommendation_engine.db')
-role_services = RoleServices(db)
-# role_services.insert_role( 2, "chef")
-# role_services.insert_role( 3, "employee")
-# role_services.delete_role(2)
-print(role_services.fetch_roles())
-print(role_services.get_role_id_by_email("hemish@gmail.com"))
+    def get_role_name_by_id(self, role_id):
+        result = self.db.fetchall('''
+        SELECT name FROM roles WHERE id = ?
+        ''', (role_id,))
+        if result:
+            return result[0][0]
+        return None
+
+# Example usage
+if __name__ == "__main__":
+    db = DatabaseServices('recommendation_engine.db')
+    role_services = RoleServices(db)
+    # role_services.insert_role(2, "chef")
+    # role_services.insert_role(3, "employee")
+    # role_services.delete_role(2)
+    print(role_services.fetch_roles())
+    print(role_services.get_role_id_by_email("hemish@gmail.com"))
