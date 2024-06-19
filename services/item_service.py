@@ -16,6 +16,7 @@ class ItemServices:
         self.db.executemany('''
         INSERT INTO items (id, name, price, meal_type_id, availability_status) VALUES (?, ?, ?, ?, ?)
         ''', items)
+        print("Item added successfully.")
 
     def insert_into_voted_items(self, voted_items):
         self.db.executemany('''
@@ -36,6 +37,12 @@ class ItemServices:
         self.db.executemany('''
         INSERT INTO notification (id, item_id, user_id, message) VALUES (?, ?, ?, ?)
         ''', notifications)
+
+    def delete_item(self, item_id):
+        query = 'DELETE FROM items WHERE id = ?'
+        params = (item_id,)
+        self.db.execute(query, params)
+        print("Item deleted successfully.")
 
 # def main():
 #     db = DatabaseServices('recommendation_engine.db')
