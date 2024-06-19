@@ -30,5 +30,5 @@ user_services = UserServices(db)
 # user_services.insert_user(5, "kashish@gmail.com", 3)
 # user_services.insert_user(6, "ahana@gmail.com", 3)
 # user_services.delete_user(1)
-print(user_services.fetch_users())
+# print(user_services.fetch_users())
 

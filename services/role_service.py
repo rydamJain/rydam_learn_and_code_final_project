@@ -35,6 +35,18 @@ class RoleServices:
             return result[0][0]
         return None
 
+    def show_role_based_options(self,role_name):
+        if role_name == "admin":
+            print("Logged in as Admin")
+            return "1. Add item\n2. Delete item\n3. Update item\nEnter your choice:"
+        elif role_name == "employee":
+            print("Logged in as Employee")
+            return "1. View menu\n2. Choose item\n3. Provide feedback\nEnter your choice:"
+        elif role_name == "chef":
+            print("Logged in as Chef")
+            return "1. Roll out menu\n2. See response\nEnter your choice:"
+        else:
+            return "Unknown role. Connection closin g."
 
 db = DatabaseServices('recommendation_engine.db')
 role_services = RoleServices(db)
@@ -42,5 +54,5 @@ role_services = RoleServices(db)
 # role_services.insert_role(2, "chef")
 # role_services.insert_role(1, "admin")
 # role_services.delete_role(2)
-print(role_services.fetch_roles())
-print(role_services.get_role_id_by_email("hemish@gmail.com"))
+# print(role_services.fetch_roles())
+# print(role_services.get_role_id_by_email("hemish@gmail.com"))
