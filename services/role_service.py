@@ -1,4 +1,6 @@
-from setup_database import DatabaseServices
+import sys
+sys.path.append("..")
+from recommendation_system.setup_database import DatabaseServices
 
 class RoleServices:
     def __init__(self, database):
@@ -33,12 +35,12 @@ class RoleServices:
             return result[0][0]
         return None
 
-# Example usage
-if __name__ == "__main__":
-    db = DatabaseServices('recommendation_engine.db')
-    role_services = RoleServices(db)
-    # role_services.insert_role(2, "chef")
-    # role_services.insert_role(3, "employee")
-    # role_services.delete_role(2)
-    print(role_services.fetch_roles())
-    print(role_services.get_role_id_by_email("hemish@gmail.com"))
+
+db = DatabaseServices('recommendation_engine.db')
+role_services = RoleServices(db)
+# role_services.insert_role(3, "employee")
+# role_services.insert_role(2, "chef")
+# role_services.insert_role(1, "admin")
+# role_services.delete_role(2)
+print(role_services.fetch_roles())
+print(role_services.get_role_id_by_email("hemish@gmail.com"))

@@ -1,18 +1,24 @@
 import socket
 import threading
-from setup_database import DatabaseServices
-from role_service import RoleServices
-from user_services import UserServices
-
+import sys
+import os
+sys.path.append("..")
+from recommendation_system.setup_database import DatabaseServices
+from services.role_service import RoleServices
+from services.user_services import UserServices
 # Server configuration
 HOST = '127.0.0.1'  # Localhost
 PORT = 65432        # Port to listen on
 
+script_dir = os.path.dirname(os.path.abspath(__file__))
+
+# Construct the path to the database
+db_path = os.path.join(script_dir, '..', 'services', 'recommendation_engine.db')
+db_path = os.path.normpath(db_path)
 # Database initialization
-db = DatabaseServices('recommendation_engine.db')
+db = DatabaseServices(db_path)
 role_services = RoleServices(db)
 user_services = UserServices(db)
-
 def handle_client(conn, addr):
     print(f"Connected by {addr}")
     with conn:

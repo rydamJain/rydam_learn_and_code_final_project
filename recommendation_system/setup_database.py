@@ -34,6 +34,14 @@ class DatabaseServices:
             FOREIGN KEY (role_id) REFERENCES roles(id)
         )
         ''')
+        # cursor.execute('''
+        # CREATE TABLE IF NOT EXISTS meal_type (
+        #     id INTEGER PRIMARY KEY,
+        #     name TEXT NOT NULL,
+        #     FOREIGN KEY (id) REFERENCES voted_items(category_id),
+        #     FOREIGN KEY (id) REFERENCES items(category_id),
+        # )
+        # ''')
         
         self._get_connection().commit()
 
