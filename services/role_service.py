@@ -38,18 +38,22 @@ class RoleServices:
     def show_role_based_options(self,role_name):
         if role_name == "admin":
             print("Logged in as Admin")
-            return "1. Add item\n2. Delete item\n3. Update item\nEnter your choice:"
+            options= "1. Add item\n2. Delete item\n3. Update item\n4. See responses from employees\nEnter your choice:"
+            return options
         elif role_name == "employee":
             print("Logged in as Employee")
-            return "1. View menu\n2. Choose item\n3. Provide feedback\nEnter your choice:"
+            options = "1. View menu\n2. Choose item\n3. Provide feedback\n4. See notification\nEnter your choice:"
+            return options
         elif role_name == "chef":
             print("Logged in as Chef")
-            return "1. Roll out menu\n2. See response\nEnter your choice:"
+            options = "1. Roll out menu\n2. See responses from employees\nEnter your choice:"
+            return options
         else:
-            return "Unknown role. Connection closin g."
+            option = "Unknown role. Connection closing."
+            return option
 
-db = DatabaseServices('recommendation_engine.db')
-role_services = RoleServices(db)
+# db = DatabaseServices('recommendation_engine.db')
+# role_services = RoleServices(db)
 # role_services.insert_role(3, "employee")
 # role_services.insert_role(2, "chef")
 # role_services.insert_role(1, "admin")

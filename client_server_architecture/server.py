@@ -7,6 +7,7 @@ from recommendation_system.setup_database import DatabaseServices
 from services.role_service import RoleServices
 from services.user_services import UserServices
 from services.login import *
+
 # Server configuration
 HOST = '127.0.0.1'  # Localhost
 PORT = 65432        # Port to listen on
@@ -22,7 +23,6 @@ db = DatabaseServices(db_path)
 role_services = RoleServices(db)
 user_services = UserServices(db)
 auth_service = AuthenticationService(user_services)
-
 
 
 def handle_client(conn, addr):

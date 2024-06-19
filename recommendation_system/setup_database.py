@@ -19,6 +19,7 @@ class DatabaseServices:
 
     def create_tables(self):
         cursor = self._get_cursor()
+        # Create roles table
         cursor.execute('''
         CREATE TABLE IF NOT EXISTS roles (
             id INTEGER PRIMARY KEY,
@@ -26,6 +27,7 @@ class DatabaseServices:
         )
         ''')
         
+        # Create users table
         cursor.execute('''
         CREATE TABLE IF NOT EXISTS users (
             id INTEGER PRIMARY KEY,
@@ -34,20 +36,90 @@ class DatabaseServices:
             FOREIGN KEY (role_id) REFERENCES roles(id)
         )
         ''')
-        # cursor.execute('''
-        # CREATE TABLE IF NOT EXISTS meal_type (
-        #     id INTEGER PRIMARY KEY,
-        #     name TEXT NOT NULL,
-        #     FOREIGN KEY (id) REFERENCES voted_items(category_id),
-        #     FOREIGN KEY (id) REFERENCES items(category_id),
-        # )
-        # ''')
+       
+        # Create items table
+        cursor.execute('''
+        CREATE TABLE IF NOT EXISTS items (
+            id INTEGER PRIMARY KEY,
+            name TEXT NOT NULL,
+            price DECIMAL NOT NULL,
+            meal_type_id INTEGER,
+            availability_status BOOLEAN NOT NULL,
+            FOREIGN KEY (meal_type_id) REFERENCES meal_type(id)
+        )
+        ''')
+
+        # Create meal_type table
+        cursor.execute('''
+        CREATE TABLE IF NOT EXISTS meal_type (
+        id INTEGER PRIMARY KEY,
+        name TEXT NOT NULL
+        )
+        ''')
+
+        # Create voted_items table
+        cursor.execute('''
+        CREATE TABLE IF NOT EXISTS voted_items (
+        id INTEGER PRIMARY KEY,
+        item_id INTEGER,
+        meal_type_id INTEGER,
+        user_id INTEGER,
+        is_voted BOOLEAN NOT NULL,
+        date TIMESTAMP NOT NULL,
+        FOREIGN KEY (item_id) REFERENCES items(id),
+        FOREIGN KEY (meal_type_id) REFERENCES meal_type(id),
+        FOREIGN KEY (user_id) REFERENCES users(id)
+        )
+        ''')
+
+        # Create feedback table
+        cursor.execute('''
+        CREATE TABLE IF NOT EXISTS feedback (
+        id INTEGER PRIMARY KEY,
+        item_id INTEGER,
+        user_id INTEGER,
+        rating INTEGER NOT NULL,
+        comment TEXT,
+        date TIMESTAMP NOT NULL,
+        FOREIGN KEY (item_id) REFERENCES items(id),
+        FOREIGN KEY (user_id) REFERENCES users(id)
+        )
+        ''')
+
+     # Create item_audit table
+        cursor.execute('''
+        CREATE TABLE IF NOT EXISTS item_audit (
+        item_id INTEGER,
+        name TEXT NOT NULL,
+        cooked_number_of_times INTEGER NOT NULL,
+        audit_date TIMESTAMP NOT NULL,
+        FOREIGN KEY (item_id) REFERENCES items(id)
+        )
+        ''')
+
+    # Create notification table
+        cursor.execute('''
+        CREATE TABLE IF NOT EXISTS notification (
+        id INTEGER PRIMARY KEY,
+        item_id INTEGER,
+        user_id INTEGER,
+        message TEXT NOT NULL,
+        FOREIGN KEY (item_id) REFERENCES items(id),
+        FOREIGN KEY (user_id) REFERENCES users(id)
+        )
+        ''')
         
         self._get_connection().commit()
 
     def execute(self, query, params=()):
         cursor = self._get_cursor()
         cursor.execute(query, params)
+        self._get_connection().commit()
+        return cursor
+
+    def executemany(self, query, params_list):
+        cursor = self._get_cursor()
+        cursor.executemany(query, params_list)
         self._get_connection().commit()
         return cursor
 
@@ -61,3 +133,6 @@ class DatabaseServices:
             self._local.cursor.close()
         if hasattr(self._local, 'conn'):
             self._local.conn.close()
+
+
+

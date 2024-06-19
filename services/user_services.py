@@ -21,8 +21,8 @@ class UserServices:
 
     
 
-db = DatabaseServices('recommendation_engine.db')
-user_services = UserServices(db)
+# db = DatabaseServices('recommendation_engine.db')
+# user_services = UserServices(db)
 # user_services.insert_user(1, "rydam@gmail.com", 1)
 # user_services.insert_user(2, "hemish@gmail.com", 2)
 # user_services.insert_user(3, "nidhi@gmail.com", 3)
