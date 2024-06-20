@@ -19,7 +19,6 @@ class UserServices:
     def fetch_users(self):
         return self.db.fetchall('SELECT * FROM users')
 
-    
 
 # db = DatabaseServices('recommendation_engine.db')
 # user_services = UserServices(db)
@@ -31,4 +30,5 @@ class UserServices:
 # user_services.insert_user(6, "ahana@gmail.com", 3)
 # user_services.delete_user(1)
 # print(user_services.fetch_users())
+
 

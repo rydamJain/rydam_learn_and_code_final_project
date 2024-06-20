@@ -16,6 +16,16 @@ class DatabaseServices:
         if not hasattr(self._local, 'cursor'):
             self._local.cursor = self._get_connection().cursor()
         return self._local.cursor
+    
+    def drop_table(self):
+        cursor = self._get_cursor()
+        cursor.execute('''
+        DROP TABLE notification
+        ''')
+        cursor.execute('''
+        DROP TABLE feedback
+        ''')
+        self._get_connection().commit()
 
     def create_tables(self):
         cursor = self._get_cursor()
@@ -80,6 +90,7 @@ class DatabaseServices:
         user_id INTEGER,
         rating INTEGER NOT NULL,
         comment TEXT,
+        sentiment_score DECIMAL,
         date TIMESTAMP NOT NULL,
         FOREIGN KEY (item_id) REFERENCES items(id),
         FOREIGN KEY (user_id) REFERENCES users(id)
@@ -90,8 +101,8 @@ class DatabaseServices:
         cursor.execute('''
         CREATE TABLE IF NOT EXISTS item_audit (
         item_id INTEGER,
-        name TEXT NOT NULL,
-        cooked_number_of_times INTEGER NOT NULL,
+        average_rating DECIMAL,
+        average_sentiment_score DECIMAL,
         audit_date TIMESTAMP NOT NULL,
         FOREIGN KEY (item_id) REFERENCES items(id)
         )
@@ -101,10 +112,8 @@ class DatabaseServices:
         cursor.execute('''
         CREATE TABLE IF NOT EXISTS notification (
         id INTEGER PRIMARY KEY,
-        item_id INTEGER,
         user_id INTEGER,
         message TEXT NOT NULL,
-        FOREIGN KEY (item_id) REFERENCES items(id),
         FOREIGN KEY (user_id) REFERENCES users(id)
         )
         ''')
@@ -133,6 +142,5 @@ class DatabaseServices:
             self._local.cursor.close()
         if hasattr(self._local, 'conn'):
             self._local.conn.close()
-
 
 

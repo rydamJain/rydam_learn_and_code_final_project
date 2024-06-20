@@ -8,7 +8,7 @@ from services.role_service import RoleServices
 from services.user_services import UserServices
 from services.login import AuthenticationService
 from services.admin import AdminHandler
-
+from services.employee_services import EmployeeService
 # Server configuration
 HOST = '127.0.0.1'  # Localhost
 PORT = 65432        # Port to listen on
@@ -49,6 +49,13 @@ def handle_client(conn, addr):
                 conn.sendall(admin_handler.show_admin_options().encode())
                 choice = conn.recv(1024).decode().strip()
                 admin_handler.handle_choice(conn, choice)
+
+        if role_name == "employee":
+            employee_handler = EmployeeService(db)
+            while True:
+                conn.sendall(employee_handler.show_employee_options().encode())
+                choice = conn.recv(1024).decode().strip()
+                employee_handler.handle_choice(conn, choice)
 
         elif role_name == "guest":
             return

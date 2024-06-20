@@ -12,7 +12,7 @@ class AdminHandler:
         1. Add item
         2. Delete item
         3. Update item
-        4. See responses from employees
+        4. View feedbacks 
         Enter your choice:
         """
         return options
@@ -44,8 +44,15 @@ class AdminHandler:
             self.item_services.delete_item(item_id)
             conn.sendall("Item deleted successfully.".encode())
         elif choice == '3':
-            # Implement update item functionality
-            pass
+            conn.sendall("Enter item id to update availability status:".encode())
+            item_id = int(conn.recv(1024).decode().strip())
+
+            conn.sendall("Enter new availability status (1 for available, 0 for not available):".encode())
+            availability_status = bool(int(conn.recv(1024).decode().strip()))
+
+            self.item_services.update_availability_status(item_id, availability_status)
+            conn.sendall("Item availability status updated successfully.".encode())
+            
         elif choice == '4':
             print("See responses from employees")
         else:
