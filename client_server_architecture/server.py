@@ -34,6 +34,7 @@ def handle_client(conn, addr):
 
             user = auth_service.authenticate_user(email)
             if user:
+                user_id = user[0]
                 role_id = user[2]
                 role_name = role_services.get_role_name_by_id(role_id)
                 break
@@ -55,7 +56,7 @@ def handle_client(conn, addr):
             while True:
                 conn.sendall(employee_handler.show_employee_options().encode())
                 choice = conn.recv(1024).decode().strip()
-                employee_handler.handle_choice(conn, choice)
+                employee_handler.handle_choice(conn, choice,user_id)
 
         elif role_name == "guest":
             return

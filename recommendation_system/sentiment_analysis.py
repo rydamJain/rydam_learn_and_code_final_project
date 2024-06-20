@@ -14,6 +14,4 @@ def get_sentiment_score(comment):
     # Extract the score
     for label in review.labels:
         return label.score
-# Example usage
-result = get_sentiment_score('Great loved the taste.')
-print(type(result))
+
