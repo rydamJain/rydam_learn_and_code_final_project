@@ -1,7 +1,6 @@
 import sys
 sys.path.append("..")
 from recommendation_system.setup_database import DatabaseServices
-
 class RoleServices:
     def __init__(self, database):
         self.db = database
@@ -60,3 +59,4 @@ class RoleServices:
 # role_services.delete_role(2)
 # print(role_services.fetch_roles())
 # print(role_services.get_role_id_by_email("hemish@gmail.com"))
+

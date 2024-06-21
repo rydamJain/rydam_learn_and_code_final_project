@@ -3,6 +3,7 @@ from datetime import datetime
 sys.path.append("..")
 from services.item_service import ItemServices
 from recommendation_system.sentiment_analysis import get_sentiment_score
+from recommendation_system.recommendation_algo import get_recommendation
 
 class ChefService:
     def __init__(self, database):
@@ -45,4 +46,7 @@ class ChefService:
         for item in voted_items:
             conn.sendall(f"ID: {item[0]}, ITem ID: {item[1]}, Meal Type ID: {item[2]}, UserID: {item[3]}\n".encode())
 
-  
+    def roll_out_menu():
+        recommendations = get_recommendation()
+        print(recommendations)
+        
