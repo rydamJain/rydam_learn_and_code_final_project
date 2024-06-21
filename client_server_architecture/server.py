@@ -9,6 +9,8 @@ from services.user_services import UserServices
 from services.login import AuthenticationService
 from services.admin import AdminHandler
 from services.employee_services import EmployeeService
+from services.chef import ChefService
+
 # Server configuration
 HOST = '127.0.0.1'  # Localhost
 PORT = 65432        # Port to listen on
@@ -27,39 +29,62 @@ auth_service = AuthenticationService(user_services)
 def handle_client(conn, addr):
     print(f"Connected by {addr}")
     with conn:
-        while True:
-            conn.sendall("Please enter your email:".encode())
-            email = conn.recv(1024).decode().strip()
-            print(f"Email received from {addr}: {email}")
+        try:
+            while True:
+                conn.sendall("Please enter your email:".encode())
+                email = conn.recv(1024).decode().strip()
+                if not email:
+                    break
+                print(f"Email received from {addr}: {email}")
 
-            user = auth_service.authenticate_user(email)
-            if user:
-                user_id = user[0]
-                role_id = user[2]
-                role_name = role_services.get_role_name_by_id(role_id)
-                break
+                user = auth_service.authenticate_user(email)
+                if user:
+                    user_id = user[0]
+                    role_id = user[2]
+                    role_name = role_services.get_role_name_by_id(role_id)
+                    break
+                else:
+                    print(f"User with email {email} doesn't exist")
+                    conn.sendall("User doesn't exist. Please enter your email again:".encode())
+            
+            conn.sendall(f"Your role is: {role_name}".encode())
+
+            if role_name == "admin":
+                admin_handler = AdminHandler(db)
+                while True:
+                    conn.sendall(admin_handler.show_admin_options().encode())
+                    choice = conn.recv(1024).decode().strip()
+                    if not choice:
+                        break
+                    admin_handler.handle_choice(conn, choice)
+
+            elif role_name == "employee":
+                employee_handler = EmployeeService(db)
+                while True:
+                    conn.sendall(employee_handler.show_employee_options().encode())
+                    choice = conn.recv(1024).decode().strip()
+                    if not choice:
+                        break
+                    employee_handler.handle_choice(conn, choice, user_id)
+
+            elif role_name == "chef":
+                chef_handler = ChefService(db)
+                while True:
+                    conn.sendall(chef_handler.show_chef_options().encode())
+                    choice = conn.recv(1024).decode().strip()
+                    if not choice:
+                        break
+                    chef_handler.handle_choice(conn, choice)
+
             else:
-                print(f"User with email {email} doesn't exist")
-                conn.sendall("User doesn't exist. Please enter your email again:".encode())
-
-        conn.sendall(f"Your role is: {role_name}".encode())
-
-        if role_name == "admin":
-            admin_handler = AdminHandler(db)
-            while True:
-                conn.sendall(admin_handler.show_admin_options().encode())
-                choice = conn.recv(1024).decode().strip()
-                admin_handler.handle_choice(conn, choice)
-
-        if role_name == "employee":
-            employee_handler = EmployeeService(db)
-            while True:
-                conn.sendall(employee_handler.show_employee_options().encode())
-                choice = conn.recv(1024).decode().strip()
-                employee_handler.handle_choice(conn, choice,user_id)
-
-        elif role_name == "guest":
-            return
+                role_name = "guest"
+        except ConnectionResetError:
+            print(f"Connection with {addr} was reset.")
+        except Exception as e:
+            print(f"Error handling client {addr}: {e}")
+        finally:
+            print(f"Connection with {addr} closed.")
+            conn.close()
 
 def main():
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
