@@ -8,3 +8,7 @@
 -- (1, 'Aloo Paratha', 0.6, '2024-06-21 14:36:00'),
 -- (2, 'Burger', 0.9, '2024-06-21 14:36:00'),
 -- (3, 'Bhindi', 0.8, '2024-06-21 14:36:00');
+-- insert into voted_item (id, item_id, user_id, date) values  (5, 56, 50, '2024-06-21 14:30:00')
+
+-- insert into feedback (id,item_id, user_id,rating,comment, sentiment_score,date) values (6, 56, 11, 4, "well cooked!", 0.70, '2024-06-21 14:30:00')
+    
