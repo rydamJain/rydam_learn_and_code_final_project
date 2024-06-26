@@ -59,4 +59,4 @@ class RoleServices:
 # role_services.delete_role(2)
 # print(role_services.fetch_roles())
 # print(role_services.get_role_id_by_email("hemish@gmail.com"))
-
+# db.rename_table()

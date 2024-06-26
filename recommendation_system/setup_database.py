@@ -27,6 +27,22 @@ class DatabaseServices:
         ''')
         self._get_connection().commit()
 
+    def rename_table(self):
+        cursor = self._get_cursor()
+        cursor.execute('''
+        ALTER TABLE items RENAME TO item;
+        ''')
+        cursor.execute('''
+        ALTER TABLE roles RENAME TO role;
+        ''')
+        cursor.execute('''
+        ALTER TABLE users RENAME TO user;
+        ''')
+        cursor.execute('''
+        ALTER TABLE voted_items RENAME TO voted_item;
+        ''')
+        self._get_connection().commit()
+
     def create_tables(self):
         cursor = self._get_cursor()
         # Create roles table
@@ -100,13 +116,17 @@ class DatabaseServices:
      # Create item_audit table
         cursor.execute('''
         CREATE TABLE IF NOT EXISTS item_audit (
+        id integer  PRIMARY KEY AUTOINCREMENT,
         item_id INTEGER,
-        average_rating DECIMAL,
-        average_sentiment_score DECIMAL,
-        audit_date TIMESTAMP NOT NULL,
-        FOREIGN KEY (item_id) REFERENCES items(id)
-        )
-        ''')
+        rating integer,
+        sentiment_score decimal,
+        feedback_date timestamp,
+        FOREIGN KEY (item_id) REFERENCES items(id),
+        FOREIGN KEY (feedback_date) REFERENCES feedback(date),
+        FOREIGN KEY (rating) REFERENCES feedback(rating),
+        FOREIGN KEY (sentiment_score) REFERENCES feedback(sentiment_score)
+     )
+      ''')
 
     # Create notification table
         cursor.execute('''
@@ -136,6 +156,11 @@ class DatabaseServices:
         cursor = self._get_cursor()
         cursor.execute(query, params)
         return cursor.fetchall()
+    
+    def fetchone(self, query, params=()):
+        cursor = self._get_cursor()
+        cursor.execute(query, params)
+        return cursor.fetchone()
 
     def close(self):
         if hasattr(self._local, 'cursor'):

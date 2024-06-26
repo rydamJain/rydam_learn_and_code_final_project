@@ -11,6 +11,12 @@ class ItemServices:
         INSERT INTO meal_type (id, name) VALUES (?, ?)
         ''', meal_types)
 
+    def get_meal_type_id(self, item_id):
+        query = '''SELECT meal_type_id FROM item WHERE item_id = ?'''
+        self.db.execute(query, (item_id,))
+        result = self.db.fetchone()
+        return result[0] if result else None
+    
     def insert_into_items(self, items):
         
         self.db.executemany('''
