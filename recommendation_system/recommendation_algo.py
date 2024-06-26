@@ -67,7 +67,6 @@ def get_recommendation(meal_type_id, target_date):
     rec_system = RecommendationSystem()
     
     items_with_feedback = rec_system.fetch_items_with_feedback(meal_type_id, target_date)
-    print("FEEDBACK ITEMS ------------", items_with_feedback)
 
     for item in items_with_feedback:
         item_id = item[0]
@@ -83,7 +82,7 @@ def get_recommendation(meal_type_id, target_date):
     # Sort items by score in descending order
     item_scores.sort(key=lambda x: x[1], reverse=True)
 
-    return item_scores
+    return item_scores[:5]
 
 meal_type_id = 1
 target_date = "2024-06-21 14:30:00"
