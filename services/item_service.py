@@ -20,25 +20,25 @@ class ItemServices:
     def insert_into_items(self, items):
         
         self.db.executemany('''
-        INSERT INTO items (id, name, price, meal_type_id, availability_status) VALUES (?, ?, ?, ?, ?)
+        INSERT INTO item (id, name, price, meal_type_id, availability_status) VALUES (?, ?, ?, ?, ?)
         ''', items)
         print("Item added successfully.")
 
     def delete_item(self, item_id):
-        query = 'DELETE FROM items WHERE id = ?'
+        query = 'DELETE FROM item WHERE id = ?'
         params = (item_id,)
         self.db.execute(query, params)
         print("Item deleted successfully.")
 
     def update_availability_status(self, item_id, availability_status):
-        query = 'UPDATE items SET availability_status = ? WHERE id = ?'
+        query = 'UPDATE item SET availability_status = ? WHERE id = ?'
         params = (availability_status, item_id)
         self.db.execute(query, params)
         print("Item availability status updated successfully.")
 
     def insert_into_voted_items(self, voted_items):
         self.db.executemany('''
-        INSERT INTO voted_items (id, item_id, meal_type_id, user_id, is_voted, date) VALUES (?, ?, ?, ?, ?, ?)
+        INSERT INTO voted_item (id, item_id, meal_type_id, user_id, is_voted, date) VALUES (?, ?, ?, ?, ?, ?)
         ''', voted_items)
 
     def insert_into_feedback(self, feedback):

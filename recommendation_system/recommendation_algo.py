@@ -84,7 +84,7 @@ def get_recommendation(meal_type_id, target_date):
 
     return item_scores[:5]
 
-meal_type_id = 1
-target_date = "2024-06-21 14:30:00"
-recommendations = get_recommendation(meal_type_id, target_date)
-print("RECOMMENDATIONS ------------", recommendations)
+# meal_type_id = 1
+# target_date = "2024-06-21 14:30:00"
+# recommendations = get_recommendation(meal_type_id, target_date)
+# print("RECOMMENDATIONS ------------", recommendations)

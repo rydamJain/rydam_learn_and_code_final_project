@@ -16,7 +16,8 @@ class ChefService:
         1. View menu 
         2. Roll out menu
         3. See responses 
-        4. Exit
+        4. View Recommendations
+        5. Exit
         Enter your choice:
         """
         return options
@@ -25,28 +26,38 @@ class ChefService:
         if choice == '1':
             self.view_menu(conn)
         elif choice == '2':
-            self.roll_out_menu(conn)
+            pass
+            # self.roll_out_menu(conn)
         elif choice == '3':
             conn.sendall("Please enter date for which you want to see voted_items\n:".encode())
             date = conn.recv(1024).decode()
             self.get_response(conn,date)
         elif choice == '4':
+            recommended_items = self.view_recommendations(conn)
+            conn.sendall(f"Recommendations are : {recommended_items}".encode())
+        elif choice == '5':
             return
         else:
             conn.sendall("Invalid choice. Please try again.".encode())
 
     def view_menu(self, conn):
-        items = self.database.fetchall("SELECT * FROM items")
+        items = self.database.fetchall("SELECT * FROM item")
         for item in items:
             conn.sendall(f"Item ID: {item[0]}, Name: {item[1]}, Price: {item[2]}, Meal Type ID: {item[3]}, Availability: {'Available' if item[4] else 'Not Available'}\n".encode())
 
     def get_response(self, conn,date):
-        query = "SELECT * FROM voted_items WHERE date = ?"
+        query = "SELECT * FROM voted_item WHERE date = ?"
         voted_items = self.database.fetchall(query, (date,))
         for item in voted_items:
             conn.sendall(f"ID: {item[0]}, ITem ID: {item[1]}, Meal Type ID: {item[2]}, UserID: {item[3]}\n".encode())
 
     def roll_out_menu():
-        recommendations = get_recommendation()
-        print(recommendations)
+        pass
         
+    def view_recommendations(self,conn):
+        conn.sendall("Please enter meal_type_id for which you want to see recommendations\n:".encode())
+        meal_type_id = conn.recv(1024).decode()
+        conn.sendall("Please enter date for which you want to see recommendations\n:".encode())
+        target_date = conn.recv(1024).decode()
+        recommended_items = get_recommendation(meal_type_id,target_date)
+        return recommended_items

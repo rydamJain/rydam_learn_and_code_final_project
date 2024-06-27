@@ -7,20 +7,20 @@ class RoleServices:
 
     def insert_role(self, role_id, name):
         self.db.execute('''
-        INSERT OR IGNORE INTO roles (id, name) VALUES (?, ?)
+        INSERT OR IGNORE INTO role (id, name) VALUES (?, ?)
         ''', (role_id, name))
 
     def delete_role(self, role_id):
         self.db.execute('''
-        DELETE FROM roles WHERE id = ?
+        DELETE FROM role WHERE id = ?
         ''', (role_id,))
 
     def fetch_roles(self):
-        return self.db.fetchall('SELECT * FROM roles')
+        return self.db.fetchall('SELECT * FROM role')
 
     def get_role_id_by_email(self, email):
         result = self.db.fetchall('''
-        SELECT role_id FROM users WHERE email = ?
+        SELECT role_id FROM user WHERE email = ?
         ''', (email,))
         if result:
             return result[0][0]
@@ -28,7 +28,7 @@ class RoleServices:
 
     def get_role_name_by_id(self, role_id):
         result = self.db.fetchall('''
-        SELECT name FROM roles WHERE id = ?
+        SELECT name FROM role WHERE id = ?
         ''', (role_id,))
         if result:
             return result[0][0]

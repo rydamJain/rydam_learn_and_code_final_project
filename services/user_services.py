@@ -8,16 +8,16 @@ class UserServices:
 
     def insert_user(self, id, email, role_id):
         self.db.execute('''
-        INSERT INTO users (id, email, role_id) VALUES (?, ?, ?)
+        INSERT INTO user (id, email, role_id) VALUES (?, ?, ?)
         ''', (id, email, role_id))
 
     def delete_user(self, id):
         self.db.execute('''
-        DELETE FROM users WHERE id = ?
+        DELETE FROM user WHERE id = ?
         ''', (id,))
 
     def fetch_users(self):
-        return self.db.fetchall('SELECT * FROM users')
+        return self.db.fetchall('SELECT * FROM user')
 
 
 # db = DatabaseServices('recommendation_engine.db')
