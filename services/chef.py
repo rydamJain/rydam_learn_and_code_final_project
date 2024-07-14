@@ -17,7 +17,9 @@ class ChefService:
         2. Roll out menu
         3. See responses 
         4. View Recommendations
-        5. Exit
+        5. Discard Menu items
+        6. Get Detailed feedback from employees
+        7. Exit
         Enter your choice:
         """
         return options
@@ -34,7 +36,12 @@ class ChefService:
         elif choice == '4':
             recommended_items = self.view_recommendations(conn)
             conn.sendall(f"Recommendations are : {recommended_items}".encode())
+
         elif choice == '5':
+            self.discard_menu_item(conn)
+        elif choice == '6':
+            self.get_detailed_feedback(conn)
+        elif choice == '7':
             return
         else:
             conn.sendall("Invalid choice. Please try again.".encode())
@@ -62,7 +69,8 @@ class ChefService:
                 if item.strip():  
                     item_id, item_name, meal_type_id = item.split(',')
                     self.database.execute(query, (item_id.strip(), item_name.strip(), meal_type_id.strip(), roll_out_date))
-            self.send_notification(conn)
+            message = "New Items rolled out."
+            self.send_notification(conn,message)
             
         
         except Exception as e:
@@ -70,8 +78,7 @@ class ChefService:
             conn.sendall(f"An error occurred: {str(e)}\n".encode())
             self.database.rollback() 
         
-    def send_notification(self, conn):
-        message = "New Items rolled out."
+    def send_notification(self, conn,message): 
         notification_date = str(datetime.today().date())
         self.database.execute("INSERT INTO notification (message, date) VALUES (?, ?)", (message, notification_date))
         conn.sendall(f"{message}\n".encode())
@@ -83,3 +90,25 @@ class ChefService:
         target_date = conn.recv(1024).decode()
         recommended_items = get_recommendation(meal_type_id,target_date)
         return recommended_items
+    
+    def get_detailed_feedback(self,conn):
+        try:
+            message = f"Some items are added in discarded menu please provide your detailed feedback for those items."
+            self.send_notification(conn,message)
+            
+        except Exception as e:
+            conn.sendall(f"An error occurred: {str(e)}\n".encode())
+
+    def discarded_item_view(self):
+        query = """create or replace view discarded_item as 
+                select f.item_id, avg(rating) as average_rating, avg(sentiment_score) as average_sentiment
+                from feedback f join menu_item m on f.item_id = m.item_id
+                group by f.item_id having average_rating < 2 and average_sentiment < 0.5;"""
+        self.database.execute_query(query)
+    
+    def discard_menu_item(self,conn):      
+            self.discarded_item_view()
+            conn.sendall("Please enter item_id to delete\n:".encode())
+            item_id = conn.recv(1024).decode()
+            query = f"""delete from item where item_id={item_id};"""
+            self.database.execute_query(query)
