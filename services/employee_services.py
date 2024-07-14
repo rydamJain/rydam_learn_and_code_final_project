@@ -15,32 +15,36 @@ class EmployeeService:
         1. View menu 
         2. Watch notification 
         3. Provide feedback / comment
-        4. Choose item 
+        4. View rolled out items 
+        5. Choose item
         Enter your choice:
         """
         return options
 
-    def handle_choice(self, conn, choice,user_id):
+    def handle_choice(self, conn, choice):
         if choice == '1':
             self.view_menu(conn)
         elif choice == '2':
-            self.watch_notifications(conn,user_id)
+            notification_date = str(datetime.today().date())
+            self.watch_notifications(conn,notification_date)
         elif choice == '3':
             self.provide_feedback(conn)
         elif choice == '4':
+            self.view_rolled_out_items(conn)   
+        elif choice == '5':
             self.vote_item(conn)
         else:
             conn.sendall("Invalid choice. Please try again.".encode())
 
     def view_menu(self, conn):
-        items = self.database.fetchall("SELECT * FROM items")
+        items = self.database.fetchall("SELECT * FROM item")
         for item in items:
             conn.sendall(f"Item ID: {item[0]}, Name: {item[1]}, Price: {item[2]}, Meal Type ID: {item[3]}, Availability: {'Available' if item[4] else 'Not Available'}\n".encode())
 
-    def watch_notifications(self, conn,user_id):
-        notifications = self.database.fetchall(f"SELECT * FROM notification where user_id = {user_id} ")
+    def watch_notifications(self, conn, notification_date):
+        notifications = self.database.fetchall("SELECT * FROM notification WHERE date = ?", (notification_date,))
         for notification in notifications:
-            conn.sendall(f"Notification ID: {notification[0]}, User ID: {notification[1]}, Message: {notification[2]}\n".encode())
+            conn.sendall(f"Notification ID: {notification[0]}, Message: {notification[1]}, Notification Date: {notification[2]}\n".encode())
 
     def provide_feedback(self, conn):
         conn.sendall("Enter item id:".encode())
@@ -66,7 +70,12 @@ class EmployeeService:
         self.database.execute(query, (item_id, user_id, rating, comment, sentiment_score,date))
         conn.sendall("Feedback submitted successfully.".encode())
 
-    
+    def view_rolled_out_items(self,conn):
+        rolled_out_date = str(datetime.today().date()) 
+        items = self.database.fetchall("SELECT * FROM rolled_out_item WHERE date=?", (rolled_out_date,))
+        for item in items:
+            conn.sendall(f"Item ID: {item[0]},Item Name: {item[1]}, Meal Type ID: {item[2]}\n".encode())
+
     def vote_item(self,conn):
         try:
             conn.sendall("Enter voted item id:".encode())

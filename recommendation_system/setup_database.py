@@ -47,7 +47,7 @@ class DatabaseServices:
         cursor = self._get_cursor()
         # Create roles table
         cursor.execute('''
-        CREATE TABLE IF NOT EXISTS roles (
+        CREATE TABLE IF NOT EXISTS role (
             id INTEGER PRIMARY KEY,
             name TEXT NOT NULL
         )
@@ -55,17 +55,17 @@ class DatabaseServices:
         
         # Create users table
         cursor.execute('''
-        CREATE TABLE IF NOT EXISTS users (
+        CREATE TABLE IF NOT EXISTS user (
             id INTEGER PRIMARY KEY,
             email TEXT NOT NULL,
             role_id INTEGER,
-            FOREIGN KEY (role_id) REFERENCES roles(id)
+            FOREIGN KEY (role_id) REFERENCES role(id)
         )
         ''')
        
-        # Create items table
+        # Create item table
         cursor.execute('''
-        CREATE TABLE IF NOT EXISTS items (
+        CREATE TABLE IF NOT EXISTS item (
             id INTEGER PRIMARY KEY,
             name TEXT NOT NULL,
             price DECIMAL NOT NULL,
@@ -83,18 +83,18 @@ class DatabaseServices:
         )
         ''')
 
-        # Create voted_items table
+        # Create voted_item table
         cursor.execute('''
-        CREATE TABLE IF NOT EXISTS voted_items (
+        CREATE TABLE IF NOT EXISTS voted_item (
         id INTEGER PRIMARY KEY,
         item_id INTEGER,
         meal_type_id INTEGER,
         user_id INTEGER,
         is_voted BOOLEAN NOT NULL,
         date TIMESTAMP NOT NULL,
-        FOREIGN KEY (item_id) REFERENCES items(id),
+        FOREIGN KEY (item_id) REFERENCES item(id),
         FOREIGN KEY (meal_type_id) REFERENCES meal_type(id),
-        FOREIGN KEY (user_id) REFERENCES users(id)
+        FOREIGN KEY (user_id) REFERENCES user(id)
         )
         ''')
 
@@ -108,8 +108,8 @@ class DatabaseServices:
         comment TEXT,
         sentiment_score DECIMAL,
         date TIMESTAMP NOT NULL,
-        FOREIGN KEY (item_id) REFERENCES items(id),
-        FOREIGN KEY (user_id) REFERENCES users(id)
+        FOREIGN KEY (item_id) REFERENCES item(id),
+        FOREIGN KEY (user_id) REFERENCES user(id)
         )
         ''')
 
@@ -121,7 +121,7 @@ class DatabaseServices:
         rating integer,
         sentiment_score decimal,
         feedback_date timestamp,
-        FOREIGN KEY (item_id) REFERENCES items(id),
+        FOREIGN KEY (item_id) REFERENCES item(id),
         FOREIGN KEY (feedback_date) REFERENCES feedback(date),
         FOREIGN KEY (rating) REFERENCES feedback(rating),
         FOREIGN KEY (sentiment_score) REFERENCES feedback(sentiment_score)
@@ -131,10 +131,9 @@ class DatabaseServices:
     # Create notification table
         cursor.execute('''
         CREATE TABLE IF NOT EXISTS notification (
-        id INTEGER PRIMARY KEY,
-        user_id INTEGER,
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
         message TEXT NOT NULL,
-        FOREIGN KEY (user_id) REFERENCES users(id)
+        date string               
         )
         ''')
         

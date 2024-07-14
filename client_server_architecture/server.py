@@ -65,7 +65,7 @@ def handle_client(conn, addr):
                     choice = conn.recv(1024).decode().strip()
                     if not choice:
                         break
-                    employee_handler.handle_choice(conn, choice, user_id)
+                    employee_handler.handle_choice(conn, choice)
 
             elif role_name == "chef":
                 chef_handler = ChefService(db)

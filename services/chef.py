@@ -26,8 +26,7 @@ class ChefService:
         if choice == '1':
             self.view_menu(conn)
         elif choice == '2':
-            pass
-            # self.roll_out_menu(conn)
+            self.roll_out_menu(conn)
         elif choice == '3':
             conn.sendall("Please enter date for which you want to see voted_items\n:".encode())
             date = conn.recv(1024).decode()
@@ -49,11 +48,34 @@ class ChefService:
         query = "SELECT * FROM voted_item WHERE date = ?"
         voted_items = self.database.fetchall(query, (date,))
         for item in voted_items:
-            conn.sendall(f"ID: {item[0]}, ITem ID: {item[1]}, Meal Type ID: {item[2]}, UserID: {item[3]}\n".encode())
+            conn.sendall(f"ID: {item[0]}, Item ID: {item[1]}, Meal Type ID: {item[2]}, UserID: {item[3]}\n".encode())
 
-    def roll_out_menu():
-        pass
+    def roll_out_menu(self,conn):
+        try:
+            conn.sendall("Please enter items to roll out (format: item_id,item_name,meal_type_id;item_id,item_name,meal_type_id;...):\n".encode())
+            rolled_out_items = conn.recv(1024).decode()
+            roll_out_date = str(datetime.today().date())
+            # Split the input into individual items
+            items = rolled_out_items.split(';')
+            query = "INSERT INTO rolled_out_item (item_id, item_name, meal_type_id, date) VALUES (?, ?, ?, ?)"
+            for item in items:
+                if item.strip():  
+                    item_id, item_name, meal_type_id = item.split(',')
+                    self.database.execute(query, (item_id.strip(), item_name.strip(), meal_type_id.strip(), roll_out_date))
+            self.send_notification(conn)
+            
         
+        except Exception as e:
+            # Handle any errors that occur
+            conn.sendall(f"An error occurred: {str(e)}\n".encode())
+            self.database.rollback() 
+        
+    def send_notification(self, conn):
+        message = "New Items rolled out."
+        notification_date = str(datetime.today().date())
+        self.database.execute("INSERT INTO notification (message, date) VALUES (?, ?)", (message, notification_date))
+        conn.sendall(f"{message}\n".encode())
+
     def view_recommendations(self,conn):
         conn.sendall("Please enter meal_type_id for which you want to see recommendations\n:".encode())
         meal_type_id = conn.recv(1024).decode()
