@@ -2,7 +2,6 @@ import sys
 from datetime import datetime
 sys.path.append("..")
 from services.item_service import ItemServices
-from recommendation_system.sentiment_analysis import get_sentiment_score
 from recommendation_system.recommendation_algo import get_recommendation
 
 class ChefService:

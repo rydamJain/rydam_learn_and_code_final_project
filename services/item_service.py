@@ -1,6 +1,7 @@
 import sys
 sys.path.append("..")
 from recommendation_system.setup_database import DatabaseServices
+from datetime import datetime
 
 class ItemServices:
     def __init__(self, database):
@@ -55,7 +56,23 @@ class ItemServices:
         self.db.executemany('''
         INSERT INTO notification (id, user_id, message) VALUES ( ?, ?, ?)
         ''', notifications)
-
+ 
+    def view_next_day_menu(self, user_id):
+        rolled_out_date = str(datetime.today().date()) 
+        query = f"""select preference.item_id, preference.item_name from (SELECT rolled_items.*,
+                CASE WHEN up.dietry = f.dietry THEN 1 ELSE 0 END AS dietary_match,
+                CASE WHEN up.spice_level = f.spice_level THEN 1 ELSE 0 END AS spice_level_match
+            FROM user_profile up
+            LEFT JOIN rolled_out_item rolled_items ON 1=1
+            LEFT JOIN meal_property f ON rolled_items.item_id = f.item_id
+            WHERE up.user_id = {user_id} and date ={rolled_out_date}
+            ORDER BY dietary_match DESC,
+                    spice_level_match DESC) preference;
+            """
+        next_day_menu = self.db.fetch_all(query)
+        if(len(next_day_menu) == 0):
+            query = """select item_id, item_name from rolled_out_item;"""
+            next_day_menu = self.db.fetch_all(query)
     
 
 # def main():

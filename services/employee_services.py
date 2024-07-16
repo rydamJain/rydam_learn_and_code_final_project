@@ -22,7 +22,7 @@ class EmployeeService:
         """
         return options
 
-    def handle_choice(self, connection, choice):
+    def handle_choice(self, connection, choice,user_id):
         if choice == '1':
             self.view_menu(connection)
         elif choice == '2':
@@ -31,7 +31,7 @@ class EmployeeService:
         elif choice == '3':
             self.provide_feedback(connection)
         elif choice == '4':
-            self.view_rolled_out_items(connection)   
+            self.view_rolled_out_items(connection,user_id)   
         elif choice == '5':
             self.vote_item(connection)
         elif choice == '6':
@@ -73,11 +73,10 @@ class EmployeeService:
         self.database.execute(query, (item_id, user_id, rating, comment, sentiment_score,date))
         connection.sendall("Feedback submitted successfully.".encode())
 
-    def view_rolled_out_items(self,connection):
-        rolled_out_date = str(datetime.today().date()) 
-        items = self.database.fetchall("SELECT * FROM rolled_out_item WHERE date=?", (rolled_out_date,))
+    def view_rolled_out_items(self,connection,user_id):
+        items = self.item_services.view_next_day_menu(user_id)
         for item in items:
-            connection.sendall(f"Item ID: {item[0]},Item Name: {item[1]}, Meal Type ID: {item[2]}\n".encode())
+            connection.sendall(f"Item ID: {item[0]},Item Name: {item[1]}\n".encode())
 
     def vote_item(self,connection):
         try:
