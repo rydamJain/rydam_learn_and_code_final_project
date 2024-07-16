@@ -60,13 +60,13 @@ class ItemServices:
     def view_next_day_menu(self, user_id):
         rolled_out_date = str(datetime.today().date()) 
         query = f"""select preference.item_id, preference.item_name from (SELECT rolled_items.*,
-                CASE WHEN up.dietry = f.dietry THEN 1 ELSE 0 END AS dietary_match,
-                CASE WHEN up.spice_level = f.spice_level THEN 1 ELSE 0 END AS spice_level_match
+                CASE WHEN up.diet = mp.diet THEN 1 ELSE 0 END AS diet_match,
+                CASE WHEN up.spice_level = mp.spice_level THEN 1 ELSE 0 END AS spice_level_match
             FROM user_profile up
             LEFT JOIN rolled_out_item rolled_items ON 1=1
-            LEFT JOIN meal_property f ON rolled_items.item_id = f.item_id
+            LEFT JOIN meal_property mp ON rolled_items.item_id = mp.item_id
             WHERE up.user_id = {user_id} and date ={rolled_out_date}
-            ORDER BY dietary_match DESC,
+            ORDER BY diet_match DESC,
                     spice_level_match DESC) preference;
             """
         next_day_menu = self.db.fetch_all(query)
