@@ -5,22 +5,22 @@ from datetime import datetime
 
 class ItemServices:
     def __init__(self, database):
-        self.db = database
+        self.database = database
 
     def insert_into_meal_type(self, meal_types):
-        self.db.executemany('''
+        self.database.executemany('''
         INSERT INTO meal_type (id, name) VALUES (?, ?)
         ''', meal_types)
 
     def get_meal_type_id(self, item_id):
         query = '''SELECT meal_type_id FROM item WHERE item_id = ?'''
-        self.db.execute(query, (item_id,))
-        result = self.db.fetchone()
+        self.database.execute(query, (item_id,))
+        result = self.database.fetchone()
         return result[0] if result else None
     
     def insert_into_items(self, items):
         
-        self.db.executemany('''
+        self.database.executemany('''
         INSERT INTO item (id, name, price, meal_type_id, availability_status) VALUES (?, ?, ?, ?, ?)
         ''', items)
         print("Item added successfully.")
@@ -28,32 +28,32 @@ class ItemServices:
     def delete_item(self, item_id):
         query = 'DELETE FROM item WHERE id = ?'
         params = (item_id,)
-        self.db.execute(query, params)
+        self.database.execute(query, params)
         print("Item deleted successfully.")
 
     def update_availability_status(self, item_id, availability_status):
         query = 'UPDATE item SET availability_status = ? WHERE id = ?'
         params = (availability_status, item_id)
-        self.db.execute(query, params)
+        self.database.execute(query, params)
         print("Item availability status updated successfully.")
 
     def insert_into_voted_items(self, voted_items):
-        self.db.executemany('''
+        self.database.executemany('''
         INSERT INTO voted_item (id, item_id, meal_type_id, user_id, is_voted, date) VALUES (?, ?, ?, ?, ?, ?)
         ''', voted_items)
 
     def insert_into_feedback(self, feedback):
-        self.db.executemany('''
+        self.database.executemany('''
         INSERT INTO feedback (id, item_id, user_id, rating, comment,sentiment_score, date) VALUES (?, ?, ?, ?, ?,?, ?)
         ''', feedback)
 
     def insert_into_item_audit(self, item_audits):
-        self.db.executemany('''
+        self.database.executemany('''
         INSERT INTO item_audit (item_id, name, cooked_number_of_times, audit_date) VALUES (?, ?, ?, ?)
         ''', item_audits)
 
     def insert_into_notification(self, notifications):
-        self.db.executemany('''
+        self.database.executemany('''
         INSERT INTO notification (id, user_id, message) VALUES ( ?, ?, ?)
         ''', notifications)
  
@@ -69,10 +69,10 @@ class ItemServices:
             ORDER BY diet_match DESC,
                     spice_level_match DESC) preference;
             """
-        next_day_menu = self.db.fetch_all(query)
+        next_day_menu = self.database.fetch_all(query)
         if(len(next_day_menu) == 0):
             query = """select item_id, item_name from rolled_out_item;"""
-            next_day_menu = self.db.fetch_all(query)
+            next_day_menu = self.database.fetch_all(query)
     
 
 # def main():

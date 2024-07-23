@@ -4,20 +4,20 @@ from recommendation_system.setup_database import DatabaseServices
 
 class UserServices:
     def __init__(self, database):
-        self.db = database
+        self.database = database
 
     def insert_user(self, id, email, role_id):
-        self.db.execute('''
+        self.database.execute('''
         INSERT INTO user (id, email, role_id) VALUES (?, ?, ?)
         ''', (id, email, role_id))
 
     def delete_user(self, id):
-        self.db.execute('''
+        self.database.execute('''
         DELETE FROM user WHERE id = ?
         ''', (id,))
 
     def fetch_users(self):
-        return self.db.fetchall('SELECT * FROM user')
+        return self.database.fetchall('SELECT * FROM user')
 
 
 # db = DatabaseServices('recommendation_engine.db')

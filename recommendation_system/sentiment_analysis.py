@@ -11,7 +11,11 @@ def get_sentiment_score(comment):
     # Predict the sentiment
     classifier.predict(review)
     
-    # Extract the score
+    # Extract the label and the score
     for label in review.labels:
-        return label.score
+        sentiment = label.value
+        score = label.score
+        if sentiment == 'NEGATIVE':
+            score = 1 - score
+        return score
 

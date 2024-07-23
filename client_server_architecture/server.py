@@ -16,12 +16,12 @@ HOST = '127.0.0.1'  # Localhost
 PORT = 65432        # Port to listen on
 
 # Get the script directory and construct the path to the database
-script_dir = os.path.dirname(os.path.abspath(__file__))
-db_path = os.path.join(script_dir, '..', 'services', 'recommendation_engine.db')
-db_path = os.path.normpath(db_path)
+script_directory = os.path.dirname(os.path.abspath(__file__))
+database_path = os.path.join(script_directory, '..', 'services', 'recommendation_engine.db')
+database_path = os.path.normpath(database_path)
 
 # Initialize database services and other necessary services
-db = DatabaseServices(db_path)
+db = DatabaseServices(database_path)
 role_services = RoleServices(db)
 user_services = UserServices(db)
 auth_service = AuthenticationService(user_services)

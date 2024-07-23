@@ -30,7 +30,7 @@ def main():
         connector.sendall(email.encode())
 
         while True:
-            message = input("Enter message to send (type 'quit' to exit): ")
+            message = input("Enter input or quit to exit: ")
             if message.lower() == 'quit':
                 print("Closing connection")
                 connector.shutdown(socket.SHUT_WR)

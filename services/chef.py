@@ -3,6 +3,7 @@ from datetime import datetime
 sys.path.append("..")
 from services.item_service import ItemServices
 from recommendation_system.recommendation_algo import get_recommendation
+import sqlite3
 
 class ChefService:
     def __init__(self, database):
@@ -80,7 +81,7 @@ class ChefService:
     def send_notification(self, conn,message): 
         notification_date = str(datetime.today().date())
         self.database.execute("INSERT INTO notification (message, date) VALUES (?, ?)", (message, notification_date))
-        conn.sendall(f"{message}\n".encode())
+        conn.sendall(f"Notification ({message}) sent successfully!\n".encode())
 
     def view_recommendations(self,conn):
         conn.sendall("Please enter meal_type_id for which you want to see recommendations\n:".encode())
@@ -99,15 +100,25 @@ class ChefService:
             conn.sendall(f"An error occurred: {str(e)}\n".encode())
 
     def discarded_item_view(self):
-        query = """create or replace view discarded_item as 
-                select f.item_id, avg(rating) as average_rating, avg(sentiment_score) as average_sentiment
-                from feedback f join menu_item m on f.item_id = m.item_id
-                group by f.item_id having average_rating < 2 and average_sentiment < 0.5;"""
-        self.database.execute_query(query)
+        drop_query = "DROP VIEW IF EXISTS discarded_item"
+        create_query = """
+        CREATE VIEW discarded_item AS
+        SELECT item_id, AVG(rating) AS average_rating, AVG(sentiment_score) AS average_sentiment
+        FROM feedback
+        GROUP BY item_id
+        HAVING AVG(rating) < 2 AND AVG(sentiment_score) < 0.5
+         """
+        try:
+            self.database.execute(drop_query)
+            self.database.execute(create_query)
+            print("View discarded_item created successfully.")
+        except sqlite3.Error as e:
+            print(f"An error occurred: {e}")
     
-    def discard_menu_item(self,conn):      
+    def discard_menu_item(self,conn):    
             self.discarded_item_view()
             conn.sendall("Please enter item_id to delete\n:".encode())
             item_id = conn.recv(1024).decode()
-            query = f"""delete from item where item_id={item_id};"""
-            self.database.execute_query(query)
+            query = f"""delete from item where id={item_id};"""
+            self.database.execute(query)
+            print("Item deleted successfully!")

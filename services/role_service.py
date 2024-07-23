@@ -3,23 +3,23 @@ sys.path.append("..")
 from recommendation_system.setup_database import DatabaseServices
 class RoleServices:
     def __init__(self, database):
-        self.db = database
+        self.database = database
 
     def insert_role(self, role_id, name):
-        self.db.execute('''
+        self.database.execute('''
         INSERT OR IGNORE INTO role (id, name) VALUES (?, ?)
         ''', (role_id, name))
 
     def delete_role(self, role_id):
-        self.db.execute('''
+        self.database.execute('''
         DELETE FROM role WHERE id = ?
         ''', (role_id,))
 
     def fetch_roles(self):
-        return self.db.fetchall('SELECT * FROM role')
+        return self.database.fetchall('SELECT * FROM role')
 
     def get_role_id_by_email(self, email):
-        result = self.db.fetchall('''
+        result = self.database.fetchall('''
         SELECT role_id FROM user WHERE email = ?
         ''', (email,))
         if result:
@@ -27,7 +27,7 @@ class RoleServices:
         return None
 
     def get_role_name_by_id(self, role_id):
-        result = self.db.fetchall('''
+        result = self.database.fetchall('''
         SELECT name FROM role WHERE id = ?
         ''', (role_id,))
         if result:

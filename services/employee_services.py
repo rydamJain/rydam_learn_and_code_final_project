@@ -111,7 +111,14 @@ class EmployeeService:
         except Exception as e:
             connection.sendall(f"An error occurred: {e}".encode())
 
+    def view_discarded_menu(self, connection):
+        items = self.database.fetchall("SELECT * FROM discarded_item")
+        for item in items:
+            connection.sendall(f"Item ID: {item[0]}, Average rating: {item[1]}, Average sentiment score: {item[2]}\n".encode())
+
+
     def detailed_feedback_of_discarded_item(self,connection):
+        self.view_discarded_menu(connection)
         connection.sendall("Enter item id:".encode())
         item_id = int(connection.recv(1024).decode().strip())
 
@@ -122,10 +129,10 @@ class EmployeeService:
         like = connection.recv(1024).decode().strip()
 
         connection.sendall("What you disliked about the item:".encode())
-        dislike = int(connection.recv(1024).decode().strip())
+        dislike = str(connection.recv(1024).decode().strip())
        
         connection.sendall("Would you provide home recipe for the item:".encode())
-        home_recipe = int(connection.recv(1024).decode().strip())
+        home_recipe = str(connection.recv(1024).decode().strip())
 
         query = '''
         INSERT INTO discarded_item_detailed_feedback (item_id, user_id, like, dislike,home_recipe)
