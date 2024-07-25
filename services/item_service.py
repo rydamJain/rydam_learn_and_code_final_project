@@ -58,21 +58,21 @@ class ItemServices:
         ''', notifications)
  
     def view_next_day_menu(self, user_id):
-        rolled_out_date = str(datetime.today().date()) 
         query = f"""select preference.item_id, preference.item_name from (SELECT rolled_items.*,
                 CASE WHEN up.diet = mp.diet THEN 1 ELSE 0 END AS diet_match,
                 CASE WHEN up.spice_level = mp.spice_level THEN 1 ELSE 0 END AS spice_level_match
             FROM user_profile up
             LEFT JOIN rolled_out_item rolled_items ON 1=1
             LEFT JOIN meal_property mp ON rolled_items.item_id = mp.item_id
-            WHERE up.user_id = {user_id} and date ={rolled_out_date}
+            WHERE up.id = {user_id} 
             ORDER BY diet_match DESC,
                     spice_level_match DESC) preference;
             """
-        next_day_menu = self.database.fetch_all(query)
+        next_day_menu = self.database.fetchall(query)
         if(len(next_day_menu) == 0):
             query = """select item_id, item_name from rolled_out_item;"""
-            next_day_menu = self.database.fetch_all(query)
+            next_day_menu = self.database.fetchall(query)
+        return next_day_menu
     
 
 # def main():
@@ -110,18 +110,13 @@ class ItemServices:
 #     (3, "Bhindi", 3, '2024-06-21 14:30:00')
 # ]
 
-#     # notification = [
-#     # ( 1, 3, "[(1, 'Aloo Paratha'), (2, 'Burger'),(3, 'Bhindi'),(4, 'Paneer')]"),
-#     # ( 2, 4, "[(1, 'Aloo Paratha'), (2, 'Burger'),(3, 'Bhindi'),(4, 'Paneer')]"),
-#     # ( 3, 7, "[(1, 'Aloo Paratha'), (2, 'Burger'),(3, 'Bhindi'),(4, 'Paneer')]"),
-#     # ( 4, 5, "[(1, 'Aloo Paratha'), (2, 'Burger'),(3, 'Bhindi'),(4, 'Paneer')]")
-#     # ]
+#   
 # #     # Insert records
 # #     # item_services.insert_into_meal_type([(1, 'breakfast'), (2, 'lunch'), (3, 'dinner')])
 # #     # item_services.insert_into_items([(1, 'Aloo Paratha', 50.00, 1, True), (2, 'Burger', 40.00, 1, True), (3, 'Bhindi', 70.00, 2, True), (4, 'Paneer', 100.00, 2, True)])
 #     item_services.insert_into_voted_items(voted_items)
 #     item_services.insert_into_feedback(feedback)
 #     item_services.insert_into_item_audit(item_audit)
-# #     item_services.insert_into_notification(notification)
+
 # if __name__ == '__main__':
 #     main()
