@@ -60,7 +60,6 @@ def handle_client(conn, addr):
 
             elif role_name == "employee":
                 employee_handler = EmployeeService(db)
-                user_id = user[0]
                 while True:
                     conn.sendall(employee_handler.show_employee_options().encode())
                     choice = conn.recv(1024).decode().strip()
