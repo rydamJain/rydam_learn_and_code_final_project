@@ -86,24 +86,18 @@ class EmployeeService:
             connection.sendall("Enter item id:".encode())
             item_id = int(connection.recv(1024).decode().strip())
 
-            connection.sendall("Enter meal type id:".encode())
-            meal_type_id = int(connection.recv(1024).decode().strip())
-
             connection.sendall("Enter user id:".encode())
             user_id = int(connection.recv(1024).decode().strip())
-
-            connection.sendall("Enter voting status (1 for voted, 0 for not voted):".encode())
-            is_voted = bool(int(connection.recv(1024).decode().strip()))
 
             connection.sendall("Enter the date (YYYY-MM-DD):".encode())
             date = connection.recv(1024).decode().strip()
             date = datetime.strptime(date, "%Y-%m-%d")
 
             query = '''
-            INSERT INTO voted_items (id, item_id, meal_type_id, user_id, is_voted, date)
-            VALUES (?, ?, ?, ?, ?, ?)
+            INSERT INTO voted_item (id, item_id, user_id, date)
+            VALUES (?, ?, ?, ?)
             '''
-            params = (voted_item_id, item_id, meal_type_id, user_id, is_voted, date)
+            params = (voted_item_id, item_id, user_id, date)
             self.database.execute(query, params)
 
             connection.sendall("Item voted successfully.".encode())
