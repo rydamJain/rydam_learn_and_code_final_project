@@ -8,174 +8,110 @@ classifier = TextClassifier.load('en-sentiment')
 # Extended sample data with vegetarian feedback from employees only
 data = [
     {
-        
-        "item": {
-            id,price
-            "name": "Aloo Paratha",
-            "category": "Breakfast",
-            "cooked_number_of_times": 10,
-            "feedback": [
-                {
-                    "user": "employee123",
-                    "rating": 4.5,
-                    "comment": "Delicious and perfectly cooked!",
-                    "timestamp": "2024-06-01T12:34:56Z"
-                },
-                {
-                    "user": "employee456",
-                    "rating": 4.0,
-                    "comment": "Great taste but a bit too fatty for me.",
-                    "timestamp": "2024-06-01T08:20:43Z"
-                }
-            ]
-        }
-    },
-    {
-        "roles": [
-            {"role_id": 1, "role_name": "admin"},
-            {"role_id": 2, "role_name": "employee"}
-        ],
-        "role_mapping": {
-            "1": "Can manage food items and view all feedback",
-            "2": "Can assist in managing food items and provide feedback"
+      "roles": [
+        {
+          "role_id": 1,
+          "role_name": "admin"
         },
-        "item": {
-            "name": "Pav Bhaji",
-            "category": "Breakfast",
-            "cooked_number_of_times": 15,
-            "feedback": [
-                {
-                    "user": "employee789",
-                    "rating": 5.0,
-                    "comment": "Fresh and crispy, loved the dressing!",
-                    "timestamp": "2024-06-01T14:56:30Z"
-                },
-                {
-                    "user": "employee012",
-                    "rating": 4.5,
-                    "comment": "Very tasty, could use a bit more vegetables.",
-                    "timestamp": "2024-06-01T09:15:21Z"
-                }
-            ]
+        {
+          "role_id": 2,
+          "role_name": "employee"
         }
+      ],
+      "role_mapping": {
+        "1": "Can manage food items and view all feedback",
+        "2": "Can assist in managing food items and provide feedback"
+      },
+      "item": {
+        "name": "Aloo Paratha",
+        "category": "Breakfast",
+        "feedback": [
+          {
+            "user": "employee123",
+            "rating": 4.5,
+            "comment": "Delicious and perfectly cooked!",
+            "timestamp": "2024-06-01T12:34:56Z"
+          },
+          {
+            "user": "employee456",
+            "rating": 4.0,
+            "comment": "Great taste but a bit too fatty for me.",
+            "timestamp": "2024-06-02T08:20:43Z"
+          }
+        ]
+      }
     },
     {
-        "roles": [
-            {"role_id": 2, "role_name": "employee"},
-            {"role_id": 3, "role_name": "chef"}
-        ],
-        "role_mapping": {
-            "2": "Can assist in managing food items and provide feedback",
-            "3": "Can create and update recipes and send notifications"
+      "roles": [
+        {
+          "role_id": 1,
+          "role_name": "admin"
         },
-        "item": {
-            "name": "Paneer Butter Masala",
-            "category": "Lunch",
-            "cooked_number_of_times": 20,
-            "feedback": [
-                {
-                    "user": "employee345",
-                    "rating": 4.8,
-                    "comment": "Rich in protein, a health conscious person's dream!",
-                    "timestamp": "2024-06-01T11:22:33Z"
-                },
-                {
-                    "user": "employee678",
-                    "rating": 4.0,
-                    "comment": "Great flavor but a bit too sweet.",
-                    "timestamp": "2024-06-01T15:48:59Z"
-                }
-            ]
+        {
+          "role_id": 3,
+          "role_name": "chef"
         }
+      ],
+      "role_mapping": {
+        "1": "Can manage food items and view all feedback",
+        "3": "Can create and update recipes and send notifications"
+      },
+      "item": {
+        "name": "Pav Bhaji",
+        "category": "Breakfast",
+        "feedback": [
+          {
+            "user": "chef_mario",
+            "rating": 5.0,
+            "comment": "Fresh and crispy, loved the dressing!",
+            "timestamp": "2024-06-03T14:56:30Z"
+          },
+          {
+            "user": "chef_anna",
+            "rating": 4.5,
+            "comment": "Very tasty, could use a bit more vegetables.",
+            "timestamp": "2024-06-04T09:15:21Z"
+          }
+        ]
+      }
     },
     {
-        "roles": [
-            {"role_id": 2, "role_name": "employee"},
-            {"role_id": 3, "role_name": "chef"}
-        ],
-        "role_mapping": {
-            "2": "Can assist in managing food items and provide feedback",
-            "3": "Can create and update recipes and send notifications"
+      "roles": [
+        {
+          "role_id": 2,
+          "role_name": "employee"
         },
-        "item": {
-            "name": "Vegetable Biryani",
-            "category": "Lunch",
-            "cooked_number_of_times": 25,
-            "feedback": [
-                {
-                    "user": "employee890",
-                    "rating": 5.0,
-                    "comment": "Perfect blend of spices!",
-                    "timestamp": "2024-06-01T12:10:22Z"
-                },
-                {
-                    "user": "employee123",
-                    "rating": 4.7,
-                    "comment": "Really enjoyed it!",
-                    "timestamp": "2024-06-01T14:32:10Z"
-                }
-            ]
+        {
+          "role_id": 3,
+          "role_name": "chef"
         }
-    },
-    {
-        "roles": [
-            {"role_id": 2, "role_name": "employee"},
-            {"role_id": 3, "role_name": "chef"}
-        ],
-        "role_mapping": {
-            "2": "Can assist in managing food items and provide feedback",
-            "3": "Can create and update recipes and send notifications"
-        },
-        "item": {
-            "name": "Veg Biryani",
-            "category": "Dinner",
-            "cooked_number_of_times": 30,
-            "feedback": [
-                {
-                    "user": "employee456",
-                    "rating": 4.9,
-                    "comment": "Aromatic and flavorful!",
-                    "timestamp": "2024-06-01T19:45:56Z"
-                },
-                {
-                    "user": "employee789",
-                    "rating": 4.5,
-                    "comment": "Really good, could use a bit more spice.",
-                    "timestamp": "2024-06-01T20:30:21Z"
-                }
-            ]
-        }
-    },
-    {
-        "roles": [
-            {"role_id": 2, "role_name": "employee"},
-            {"role_id": 3, "role_name": "chef"}
-        ],
-        "role_mapping": {
-            "2": "Can assist in managing food items and provide feedback",
-            "3": "Can create and update recipes and send notifications"
-        ],
-        "item": {
-            "name": "Paneer Tikka",
-            "category": "Dinner",
-            "cooked_number_of_times": 22,
-            "feedback": [
-                {
-                    "user": "employee234",
-                    "rating": 4.6,
-                    "comment": "Fresh and tasty!",
-                    "timestamp": "2024-06-01T18:30:11Z"
-                },
-                {
-                    "user": "employee678",
-                    "rating": 4.2,
-                    "comment": "Nice flavor but a bit too salty.",
-                    "timestamp": "2024-06-01T19:15:43Z"
-                }
-            ]
-        }
+      ],
+      "role_mapping": {
+        "2": "Can assist in managing food items and provide feedback",
+        "3": "Can create and update recipes and send notifications"
+      },
+      "item": {
+        "name": "Paneer",
+        "category": "Lunch",
+        "feedback": [
+          {
+            "user": "chef_lucy",
+            "rating": 4.8,
+            "comment": "Rich in protein, a health conscious person's dream!",
+            "timestamp": "2024-06-05T11:22:33Z"
+          },
+          {
+            "user": "employee789",
+            "rating": 4.0,
+            "comment": "Great flavor but a bit too sweet.",
+            "timestamp": "2024-06-06T15:48:59Z"
+          }
+        ]
+      }
     }
-]
+  ]
+  
+
 
 # Function to get average rating, sentiment score, and count for employee feedback by category and date
 def analyze_feedback(data, meal_category, target_date):

@@ -6,64 +6,91 @@ sys.path.append("..")
 from recommendation_system.setup_database import DatabaseServices
 from services.role_service import RoleServices
 from services.user_services import UserServices
+from services.login import AuthenticationService
+from services.admin import AdminHandler
+from services.employee_services import EmployeeService
+from services.chef import ChefService
+
 # Server configuration
 HOST = '127.0.0.1'  # Localhost
 PORT = 65432        # Port to listen on
 
-script_dir = os.path.dirname(os.path.abspath(__file__))
+# Get the script directory and construct the path to the database
+script_directory = os.path.dirname(os.path.abspath(__file__))
+database_path = os.path.join(script_directory, '..', 'services', 'recommendation_engine.db')
+database_path = os.path.normpath(database_path)
 
-# Construct the path to the database
-db_path = os.path.join(script_dir, '..', 'services', 'recommendation_engine.db')
-db_path = os.path.normpath(db_path)
-# Database initialization
-db = DatabaseServices(db_path)
+# Initialize database services and other necessary services
+db = DatabaseServices(database_path)
 role_services = RoleServices(db)
 user_services = UserServices(db)
+auth_service = AuthenticationService(user_services)
+
 def handle_client(conn, addr):
     print(f"Connected by {addr}")
     with conn:
-        # Request email from the client
-        conn.sendall("Please enter your email:".encode())
-        email = conn.recv(1024).decode().strip()
-        print(f"Email received from {addr}: {email}")
-        
-        # Determine the role based on the email
-        role_id = role_services.get_role_id_by_email(email)
-        if role_id:
-            role_name = role_services.get_role_name_by_id(role_id)
-        else:
-            role_name = "guest"
+        try:
+            while True:
+                conn.sendall("Please enter your email:".encode())
+                email = conn.recv(1024).decode().strip()
+                if not email:
+                    break
+                print(f"Email received from {addr}: {email}")
 
-        conn.sendall(f"Your role is: {role_name}".encode())
+                user = auth_service.authenticate_user(email)
+                if user:
+                    user_id = user[0]
+                    role_id = user[2]
+                    role_name = role_services.get_role_name_by_id(role_id)
+                    break
+                else:
+                    print(f"User with email {email} doesn't exist")
+                    conn.sendall("User doesn't exist. Please enter your email again:".encode())
+            
+            conn.sendall(f"Your role is: {role_name}".encode())
 
-        if role_name == "admin":
-            options = "1. Add item\n2. Delete item\n3. Update item\nEnter your choice:"
-        elif role_name == "employee":
-            options = "1. View menu\n2. Choose item\n3. Provide feedback\nEnter your choice:"
-        elif role_name == "chef":
-            options = "1. Roll out menu\n2. See response\nEnter your choice:"
-        else:
-            options = "Unknown role. Connection closing."
-            conn.sendall(options.encode())
-            return
+            if role_name == "admin":
+                admin_handler = AdminHandler(db)
+                while True:
+                    conn.sendall(admin_handler.show_admin_options().encode())
+                    choice = conn.recv(1024).decode().strip()
+                    if not choice:
+                        break
+                    admin_handler.handle_choice(conn, choice)
 
-        conn.sendall(options.encode())
+            elif role_name == "employee":
+                employee_handler = EmployeeService(db)
+                while True:
+                    conn.sendall(employee_handler.show_employee_options().encode())
+                    choice = conn.recv(1024).decode().strip()
+                    if not choice:
+                        break
+                    employee_handler.handle_choice(conn, choice,user_id)
 
-        while True:
-            data = conn.recv(1024)
-            if not data:
-                break
-            choice = data.decode().strip()
-            response = f"You selected: {choice}"
-            conn.sendall(response.encode())
+            elif role_name == "chef":
+                chef_handler = ChefService(db)
+                while True:
+                    conn.sendall(chef_handler.show_chef_options().encode())
+                    choice = conn.recv(1024).decode().strip()
+                    if not choice:
+                        break
+                    chef_handler.handle_choice(conn, choice)
 
-    print(f"Connection with {addr} closed")
+            else:
+                role_name = "guest"
+        except ConnectionResetError:
+            print(f"Connection with {addr} was reset.")
+        except Exception as e:
+            print(f"Error handling client {addr}: {e}")
+        finally:
+            print(f"Connection with {addr} closed.")
+            conn.close()
 
 def main():
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
         s.bind((HOST, PORT))
         s.listen()
-        print(f"Server listening on {HOST}:{PORT}")
+        print(f"Server started and listening on {HOST}:{PORT}")
         while True:
             conn, addr = s.accept()
             client_thread = threading.Thread(target=handle_client, args=(conn, addr))
